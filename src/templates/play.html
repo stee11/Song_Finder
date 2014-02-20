@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="//www.rdio.com/api/api.js?client_id=vS0CiH31N3xADp7v-iHBpA"></script>
+    <div></div>
+    <script type="text/javascript">
+      var trackName = '{{ trackData["track"] }}';
+      var artist = '{{ trackData["artist"] }}';
+      document.title = "You're listening to "+trackName+ " on Song Finder";
+
+      var playSong = function () {
+      R.request({
+                method: "search",
+                content: {
+                        types: "Track",
+                        count: 1,
+                        query: trackName + ", " + artist
+                },
+                success: function(response) {
+                  var top = response.result.results[0];
+                  R.player.play({source: top.key});
+                },
+                error: function(response) {
+                        console.log("error: " + response.message);
+                }
+            });
+      };
+      R.ready(function() {
+        if(!R.authenticated()) {
+           $("div").append("<h3><center>Please click the button below to sign into Rdio and use Song Finder.</center></h3>");
+           $("div").append("<center><button type=\"button\">Log In</center></button>");
+           $("button").click(function () {
+              R.authenticate(function (authenticated) {
+                if (authenticated) {
+                  location.reload();
+                }
+              })
+         })}
+      else {
+        $("div").append("<h3><center><strong>You're listening to </strong>"+top.trackName + " by " + top.artist+"</center></h3>");
+          playSong();
+      }
+      });
+    </script>
+  </head>
+  <body>
+  <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-44917594-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+  </body>
+</html>
+
